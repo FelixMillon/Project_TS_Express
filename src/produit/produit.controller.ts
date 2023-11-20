@@ -14,14 +14,13 @@ export class ProduitController {
     ): Promise<Produit | null> {
         this.checkID(id_cat);
         this.checkString(libelle, "libelle");
-        this.checkString(description, "description");
         this.checkString(url_image, "url_image");
         this.checkDate(date_achat, "date_achat");
         this.checkPrice(prix);
         if(date_peremption != null){
             this.checkDate(date_peremption, "date_peremption");
         }
-        return this.produitService.add(
+        return await this.produitService.add(
             libelle,
             description,
             prix,
@@ -34,25 +33,34 @@ export class ProduitController {
 
     async update(
         id: number,
-        libelle: string,
-        description:string,
-        prix: number,
-        date_achat: string,
+        libelle: string | null,
+        description:string | null,
+        prix: number | null,
+        date_achat: string | null,
         date_peremption: string | null,
-        url_image: string,
-        id_cat: number
+        url_image: string | null,
+        id_cat: number | null
     ): Promise<boolean> {
         this.checkID(id);
-        this.checkID(id_cat);
-        this.checkString(libelle, "libelle");
-        this.checkString(description, "description");
-        this.checkString(url_image, "url_image");
-        this.checkDate(date_achat, "date_achat");
-        this.checkPrice(prix);
-        if(date_peremption != null){
+        if(id_cat){
+            this.checkID(id_cat);
+        }
+        if(libelle){
+            this.checkString(libelle, "libelle");
+        }
+        if(url_image){
+            this.checkString(url_image, "url_image");
+        }
+        if(date_achat){
+            this.checkDate(date_achat, "date_achat");
+        }
+        if(prix){
+            this.checkPrice(prix);
+        }
+        if(date_peremption){
             this.checkDate(date_peremption, "date_peremption");
         }
-        return this.produitService.update(
+        return await this.produitService.update(
             id,
             libelle,
             description,
@@ -120,14 +128,14 @@ export class ProduitController {
 
     private checkPrice(testedPrice: number)
     {
-        const partieEntiere = Math.abs(Math.trunc(testedPrice));
-        const partieDecimale = Math.abs(testedPrice - Math.trunc(testedPrice));
-        const decimaleEnChaine = partieDecimale.toString().split('.')[1];
-        if (decimaleEnChaine.length >= 2) {
-            throw new Error(`price must have only 2 numbers after "."`);
-        }
+        let testedPricestring = testedPrice.toString()
+        const partieDecimaleString = testedPricestring.split(".")[1];
+        const partieEntiere = parseInt(testedPricestring);
         if (partieEntiere >= 1000) {
             throw new Error(`price is to high`);
+        }
+        if (partieDecimaleString.length > 2) {
+            throw new Error(`price must have only 2 numbers after "."`);
         }
     }
 

@@ -16,12 +16,16 @@ export class CatProMySQLService implements CatProService {
         }
     }
 
-    async update(id: number, libelle: string, description: string): Promise<boolean> {
+    async update(
+        id: number,
+        libelle: string | null,
+        description: string | null
+    ): Promise<boolean> {
         let updates = [];
-        if(libelle != "none"){
+        if(libelle){
             updates.push(`libelle='${libelle}'`);
         }
-        if(description != "none"){
+        if(description){
             updates.push(`description='${description}'`);
         }
         if(updates.length > 0)
