@@ -14,7 +14,7 @@ export class ProduitMySQLService implements ProduitService {
         id_cat: number
     ): Promise<Produit | null> {
         try {
-            const userQuery = `INSERT INTO produit (libelle, description, prix, date_achat, ${date_peremption != null ? `'${date_peremption}',` : ''} url_image, id_cat) VALUES ('${libelle}', '${description}', ${prix}, '${date_achat}', ${date_peremption != null ? `'${date_peremption}',` : ''}, '${url_image}', '${id_cat}')`;
+            const userQuery = `INSERT INTO produit (libelle, description, prix, date_achat, ${date_peremption != null ? 'date_peremption,' : ''} url_image, id_cat) VALUES ('${libelle}', '${description}', ${prix}, '${date_achat}', ${date_peremption != null ? date_peremption+',' : ''} '${url_image}', '${id_cat}')`;
             const results = await this.db.asyncQuery(userQuery);
             const insertedPro = new Produit(
                 results.insertId,
@@ -35,34 +35,34 @@ export class ProduitMySQLService implements ProduitService {
 
     async update(
         id: number,
-        libelle: string,
-        description:string,
-        prix: number,
-        date_achat: string,
+        libelle: string | null,
+        description:string | null,
+        prix: number | null,
+        date_achat: string | null,
         date_peremption: string | null,
-        url_image: string,
-        id_cat: number
+        url_image: string | null,
+        id_cat: number | null
     ): Promise<boolean> {
         let updates = [];
-        if(libelle != "none"){
-            updates.push(`username_user='${libelle}'`);
+        if(libelle){
+            updates.push(`libelle='${libelle}'`);
         }
-        if(description != "none"){
-            updates.push(`email_user='${description}'`);
+        if(description){
+            updates.push(`description='${description}'`);
         }
-        if(prix != -1){
+        if(prix){
             updates.push(`prix='${prix}'`);
         }
-        if(date_achat != "0000-00-00"){
+        if(date_achat){
             updates.push(`date_achat='${date_achat}'`);
         }
-        if(date_peremption != "0000-00-00"){
+        if(date_peremption){
             updates.push(`date_peremption='${date_peremption}'`);
         }
-        if(url_image != "none"){
+        if(url_image){
             updates.push(`url_image='${url_image}'`);
         }
-        if(id_cat != 0){
+        if(id_cat){
             updates.push(`id_cat='${id_cat}'`);
         }
         if(updates.length > 0)
