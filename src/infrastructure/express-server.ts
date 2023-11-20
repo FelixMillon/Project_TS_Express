@@ -1,6 +1,7 @@
 import express from 'express';
 import { ExpressRouter } from './express-router';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 export class ExpressServer {
     private express = express();
@@ -9,8 +10,16 @@ export class ExpressServer {
         private expressRouter: ExpressRouter,
         private port: string,
     ) {
+        this.configureCORS();
         this.configureBodyParser();
         this.configureRoutes();
+    }
+
+    private configureCORS(): void {
+        this.express.use(cors());
+
+        // Ou pour restreindre les origines autorisées :
+        // this.express.use(cors({ origin: 'http://localhost:5173' }));
     }
 
     private configureBodyParser(): void {
