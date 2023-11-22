@@ -4,16 +4,17 @@ export class CatProController {
     constructor(private catProService: CatProService) {}
 
     async add(libelle: string,description: string): Promise<CatPro | null> {
-        this.checkString(libelle, "libelle");
-        this.checkString(description, "description");
-        return this.catProService.add(libelle, description);
+        return await this.catProService.add(libelle, description);
     }
 
-    async update(id: number,libelle: string, description: string): Promise<boolean> {
-        this.checkID(id);
-        this.checkString(libelle, "libelle");
-        this.checkString(description, "email");
-        return await this.catProService.update(id,libelle,description);
+    async update(
+        id_cat: number,
+        libelle: string | null,
+        description: string | null
+    ): Promise<boolean> {
+        console.log(id_cat)
+        this.checkID(id_cat);
+        return await this.catProService.update(id_cat,libelle,description);
     }
     
     async delete(id: number): Promise<boolean> {
