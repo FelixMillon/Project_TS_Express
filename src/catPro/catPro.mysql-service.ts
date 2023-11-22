@@ -17,7 +17,7 @@ export class CatProMySQLService implements CatProService {
     }
 
     async update(
-        id: number,
+        id_cat: number,
         libelle: string | null,
         description: string | null
     ): Promise<boolean> {
@@ -30,7 +30,7 @@ export class CatProMySQLService implements CatProService {
         }
         if(updates.length > 0)
         {
-            const Query = `UPDATE categorie_produit set ${updates.join(", ")} where id_cat=${id}`;
+            const Query = `UPDATE categorie_produit set ${updates.join(", ")} where id_cat=${id_cat}`;
             try {
                 const results = await this.db.asyncQuery(Query);
                 return true;
@@ -44,8 +44,8 @@ export class CatProMySQLService implements CatProService {
         }
     }
 
-    async delete(id: number): Promise<boolean> {
-        const Query = `DELETE FROM categorie_produit where id_cat=${id}`;
+    async delete(id_cat: number): Promise<boolean> {
+        const Query = `DELETE FROM categorie_produit where id_cat=${id_cat}`;
         try {
             const results = await this.db.asyncQuery(Query);
             return true;
@@ -73,7 +73,7 @@ export class CatProMySQLService implements CatProService {
             const results = await this.db.asyncQuery(userQuery);
             let selectedCats = [];
             for( let i = 0; i< results.length; i++){
-                selectedCats.push(new CatPro(results[i].insertId,results[i].libelle,results[i].description));
+                selectedCats.push(new CatPro(results[i].id_cat,results[i].libelle,results[i].description));
             }
             return(selectedCats);
         } catch (error) {

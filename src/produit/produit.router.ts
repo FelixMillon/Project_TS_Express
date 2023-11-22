@@ -8,6 +8,7 @@ export class ProduitRouter {
     private configureRoutes(): void {
         this.router.get('/get-by-id/:id/', async (req, res, next) => {
             try {
+                console.log(req.headers)
                 const result = await this.produitController.getById(
                     parseInt(req.params.id),
                 );

@@ -12,19 +12,18 @@ export class CatProController {
         libelle: string | null,
         description: string | null
     ): Promise<boolean> {
-        console.log(id_cat)
         this.checkID(id_cat);
         return await this.catProService.update(id_cat,libelle,description);
     }
     
-    async delete(id: number): Promise<boolean> {
-        this.checkID(id);
-        return await this.catProService.delete(id);
+    async delete(id_cat: number): Promise<boolean> {
+        this.checkID(id_cat);
+        return await this.catProService.delete(id_cat);
     }
 
-    async getById(id: number): Promise<CatPro | null> {
-        this.checkID(id);
-        return await this.catProService.getById(id);
+    async getById(id_cat: number): Promise<CatPro | null> {
+        this.checkID(id_cat);
+        return await this.catProService.getById(id_cat);
     }
 
     async getAll(): Promise<CatPro[] | null> {

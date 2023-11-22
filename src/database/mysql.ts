@@ -45,9 +45,7 @@ class MySQLConnection {
         const db = MySQLConnection.getInstance();
         
         try {
-            console.log("je vais ouvrir")
             await db.connect();
-            console.log("j'ai ouvert")
             return new Promise((resolve, reject) => {
                 db.query(query, (error: any, results: any) => {
                     if (error) {
@@ -61,9 +59,7 @@ class MySQLConnection {
             console.error('Erreur lors de la requête :', error);
             return null;
         } finally {
-            console.log("je vais fermer")
             await db.close();
-            console.log("j'ai fermé")
         }
     }
 
