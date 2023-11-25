@@ -12,13 +12,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.456.0",
+    "@aws-sdk/s3-request-presigner": "^3.456.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "mysql": "^2.18.1"
+    "multer": "^1.4.5-lts.1",
+    "mysql": "^2.18.1",
+    "sharp": "^0.32.6"
   },
   "devDependencies": {
     "@types/express": "^4.17.18",
     "@types/jest": "^29.5.5",
+    "@types/multer": "^1.4.11",
     "@types/mysql": "^2.15.23",
     "@types/node": "^20.6.2",
     "jest": "^29.7.0",
