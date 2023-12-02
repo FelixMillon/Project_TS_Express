@@ -121,7 +121,7 @@ export class ProduitMySQLService implements ProduitService {
             let selectedPros = [];
             for( let i = 0; i< results.length; i++){
                 selectedPros.push(new Produit(
-                    results[i].insertId,
+                    results[i].id_pro,
                     results[i].libelle,
                     results[i].description,
                     results[i].prix,
