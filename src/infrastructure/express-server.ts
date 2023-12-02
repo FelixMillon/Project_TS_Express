@@ -2,7 +2,6 @@ import express from 'express';
 import cors, { CorsOptions } from 'cors';
 import { ExpressRouter } from './express-router';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 
 export class ExpressServer {
     private express = express();
@@ -17,10 +16,6 @@ export class ExpressServer {
         this.configureBodyParser();
         this.configureRoutes();
     }
-    private configureCORS(): void {
-        this.express.use(cors());
-    }
-
 
     // private configureCorsPolicy(): void {
     //     const corsOptions: CorsOptions = {
