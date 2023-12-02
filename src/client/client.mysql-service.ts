@@ -16,6 +16,10 @@ export class ClientMySQLService implements ClientService {
         numrue: string,
         complement: string | null
     ): Promise<Client | null> {
+        const UserExists = await this.getByEmail(email);
+        if(UserExists != null){
+            return null;
+        }
         try {
             const cliQuery = `INSERT INTO client (
                     email,
