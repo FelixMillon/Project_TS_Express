@@ -10,6 +10,8 @@ create table client
 	prenom varchar(100) not null,
     mdp varchar(50) not null,
 	date_naiss date not null,
+	ville varchar(50) not null,
+	cp varchar(10) not null,
 	rue varchar(50) not null,
 	numrue int(5) not null,
 	complement varchar(50) not null,

@@ -1,16 +1,21 @@
-import { Admin } from './admin';
-import { AdminService } from './admin.service';
+import { Client } from './client';
+import { ClientService } from './client.service';
 import MySQLConnection from '../database/mysql';
 
-export class AdminMySQLService implements AdminService {
+export class ClientMySQLService implements ClientService {
     db = MySQLConnection.getInstance();
     async add(
         email: string,
         nom: string,
-        mdp: string,
         prenom: string,
-        droits: number
-    ): Promise<Admin | null> {
+        mdp: string,
+        date_naiss: string,
+        ville: string,
+        cp: string,
+        rue: string,
+        numrue: string,
+        complement: string | null
+    ): Promise<Client | null> {
         const UserExists = await this.getByEmail(email);
         if(UserExists != null){
             return null;
@@ -21,24 +26,39 @@ export class AdminMySQLService implements AdminService {
                     nom,
                     prenom,
                     mdp,
-                    droits
+                    date_naiss,
+                    ville,
+                    cp,
+                    rue,
+                    numrue
+                    ${complement != null ? ',complement' : ''}
                 ) VALUES (
                     '${email}',
                     '${nom}',
                     '${prenom}',
                     '${mdp}',
-                    '${droits}'
+                    '${date_naiss}',
+                    '${ville}',
+                    '${cp}',
+                    '${rue}',
+                    '${numrue}'
+                    ${complement != null ? ",'"+complement+"'" : ''}
                 )`;
             const results = await this.db.asyncQuery(cliQuery);
-            const insertedAdmin = new Admin(
+            const insertedClient = new Client(
                 results.insertId,
                 results.email,
                 results.nom,
                 results.prenom,
                 results.mdp,
-                results.droits
+                results.date_naiss,
+                results.ville,
+                results.cp,
+                results.rue,
+                results.numrue,
+                results.complement
             );
-            return(insertedAdmin);
+            return(insertedClient);
         } catch (error) {
             console.error('Erreur lors de la creation du client :', error);
             return null;

@@ -14,7 +14,23 @@ export class ProduitMySQLService implements ProduitService {
         id_cat: number
     ): Promise<Produit | null> {
         try {
-            const userQuery = `INSERT INTO produit (libelle, description, prix, date_achat, ${date_peremption != null ? 'date_peremption,' : ''} url_image, id_cat) VALUES ('${libelle}', '${description}', ${prix}, '${date_achat}', ${date_peremption != null ? date_peremption+',' : ''} '${url_image}', '${id_cat}')`;
+            const userQuery = `INSERT INTO produit (
+                libelle,
+                description,
+                prix,
+                date_achat,
+                ${date_peremption != null ? 'date_peremption,' : ''}
+                url_image,
+                id_cat
+            ) VALUES (
+                '${libelle}',
+                '${description}',
+                ${prix},
+                '${date_achat}',
+                ${date_peremption != null ? "'"+date_peremption+"'," : ''}
+                '${url_image}',
+                '${id_cat}'
+            )`;
             const results = await this.db.asyncQuery(userQuery);
             const insertedPro = new Produit(
                 results.insertId,
@@ -98,7 +114,7 @@ export class ProduitMySQLService implements ProduitService {
             const results = await this.db.asyncQuery(userQuery);
             const RowResult = results[0]
             const selectedPro = new Produit(
-                RowResult.id_cat,
+                RowResult.id_pro,
                 RowResult.libelle,
                 RowResult.description,
                 RowResult.prix,
@@ -121,7 +137,7 @@ export class ProduitMySQLService implements ProduitService {
             let selectedPros = [];
             for( let i = 0; i< results.length; i++){
                 selectedPros.push(new Produit(
-                    results[i].insertId,
+                    results[i].id_pro,
                     results[i].libelle,
                     results[i].description,
                     results[i].prix,
@@ -145,7 +161,7 @@ export class ProduitMySQLService implements ProduitService {
             let selectedPros = [];
             for( let i = 0; i< results.length; i++){
                 selectedPros.push(new Produit(
-                    results[i].insertId,
+                    results[i].id_pro,
                     results[i].libelle,
                     results[i].description,
                     results[i].prix,

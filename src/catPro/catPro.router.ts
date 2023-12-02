@@ -6,10 +6,10 @@ export class CatProRouter {
         this.configureRoutes();
     }
     private configureRoutes(): void {
-        this.router.get('/get-by-id/:id', async (req, res, next) => {
+        this.router.get('/get-by-id/:id_cat', async (req, res, next) => {
             try {
                 const result = await this.catProController.getById(
-                    parseInt(req.params.id),
+                    parseInt(req.params.id_cat),
                 );
                 res.status(200).json(result);
             } catch (error: unknown) {
@@ -42,10 +42,10 @@ export class CatProRouter {
                 next(error);
             }
         });
-        this.router.delete('/delete/:id', async (req, res, next) => {
+        this.router.delete('/delete/:id_cat', async (req, res, next) => {
             try {
                 const result = await this.catProController.delete(
-                    parseInt(req.params.id),
+                    parseInt(req.params.id_cat),
                 );
                 res.status(200).json(result);
             } catch (error: unknown) {
