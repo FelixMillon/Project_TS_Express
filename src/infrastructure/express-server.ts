@@ -11,26 +11,31 @@ export class ExpressServer {
         private expressRouter: ExpressRouter,
         private port: string,
     ) {
-        this.configureCorsPolicy();
+        //this.configureCorsPolicy();
+        this.configureCORS();
         this.configureBodyParser();
         this.configureRoutes();
     }
-
-    private configureCorsPolicy(): void {
-        const corsOptions: CorsOptions = {
-            origin: (origin, callback) => {
-                const isOriginAllowed =
-                    !origin || this.allowedMainOrigin === origin;
-
-                if (isOriginAllowed) {
-                    callback(null, true);
-                } else {
-                    callback(new Error('CORS: Request origin is not allowed'));
-                }
-            },
-        };
-        this.express.use(cors(corsOptions));
+    private configureCORS(): void {
+        this.express.use(cors());
     }
+
+
+    // private configureCorsPolicy(): void {
+    //     const corsOptions: CorsOptions = {
+    //         origin: (origin, callback) => {
+    //             const isOriginAllowed =
+    //                 !origin || this.allowedMainOrigin === origin;
+
+    //             if (isOriginAllowed) {
+    //                 callback(null, true);
+    //             } else {
+    //                 callback(new Error('CORS: Request origin is not allowed'));
+    //             }
+    //         },
+    //     };
+    //     this.express.use(cors(corsOptions));
+    // }
     private configureBodyParser(): void {
         this.express.use(bodyParser.json());
     }
