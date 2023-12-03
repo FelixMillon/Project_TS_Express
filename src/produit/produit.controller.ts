@@ -109,9 +109,9 @@ export class ProduitController {
             throw new Error(`${key} is empty`);
         }
         // is the string whitespaced ?
-        if (testedString.includes(" ")) {
-            throw new Error(`${key} is whitespaced`);
-        }
+        // if (testedString.includes(" ")) {
+        //     throw new Error(`${key} is whitespaced`);
+        // }
         // other checks
     }
 
@@ -134,9 +134,9 @@ export class ProduitController {
         if (partieEntiere >= 1000) {
             throw new Error(`price is to high`);
         }
-        if (partieDecimaleString.length > 2) {
-            throw new Error(`price must have only 2 numbers after "."`);
-        }
+        // if (partieDecimaleString.length > 2) {
+        //     throw new Error(`price must have only 2 numbers after "."`);
+        // }
     }
 
 }
