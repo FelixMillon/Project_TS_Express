@@ -1,18 +1,25 @@
 import { ExpressServer } from './express-server';
 import * as dotenv from 'dotenv';
 import { ExpressRouter } from './express-router';
-import { UserService } from '../user/user.service';
+//import client
+import { ClientService } from '../client/client.service';
+import { ClientMySQLService } from '../client/client.mysql-service';
+//import administrateur
+import { AdminService } from '../admin/admin.service';
+import { AdminMySQLService } from '../admin/admin.mysql-service';
+//import categorie produit
 import { CatProService } from '../catPro/catPro.service';
-import { ProduitService } from '../produit/produit.service';
-import { UserMySQLService } from '../user/user.mysql-service';
 import { CatProMySQLService } from '../catPro/catPro.mysql-service';
+//import produit
+import { ProduitService } from '../produit/produit.service';
 import { ProduitMySQLService } from '../produit/produit.mysql-service';
 
 export class ExpressApplication {
     private expressRouter!: ExpressRouter;
     private port!: string;
     private server!: ExpressServer;
-    private userService!: UserService;
+    private clientService!: ClientService;
+    private adminService!: AdminService;
     private catProService!: CatProService;
     private produitService!: ProduitService;
 
@@ -43,13 +50,19 @@ export class ExpressApplication {
     }
 
     private configureServices(){
-        this.userService = new UserMySQLService();
+        this.clientService = new ClientMySQLService();
+        this.adminService = new AdminMySQLService();
         this.catProService = new CatProMySQLService();
         this.produitService = new ProduitMySQLService();
     }
 
     private configureExpressRouter(){
-        this.expressRouter = new ExpressRouter(this.userService,this.catProService,this.produitService );
+        this.expressRouter = new ExpressRouter(
+            this.clientService,
+            this.adminService,
+            this.catProService,
+            this.produitService
+        );
     }
 
     private configureServer() {

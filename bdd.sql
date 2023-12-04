@@ -10,6 +10,8 @@ create table client
 	prenom varchar(100) not null,
     mdp varchar(50) not null,
 	date_naiss date not null,
+	ville varchar(50) not null,
+	cp varchar(20) not null,
 	rue varchar(50) not null,
 	numrue int(5) not null,
 	complement varchar(50) not null,
@@ -73,16 +75,16 @@ insert into categorie_produit values(null, "Produits laitiers", "Des super produ
 insert into categorie_produit values(null, "Fruits et legumes", "Des fruits et legumes pour bien manger !");
 insert into categorie_produit values(null, "Viandes", "Pour les carnivores !");
 
-insert into produit values(null,"yaourt a la fraise","yaourt 0% de matieres grasses avec de la fraise",1.89,"2023-11-04","2023-12-04","yaourt_fraise.jpg",1);
-insert into produit values(null,"yaourt a la mangue","yaourt 0% de matieres grasses avec de la mangue",1.89,"2023-11-02","2023-12-02","yaourt_mangue.jpg",1);
-insert into produit values(null,"fromage blanc","fromage blanc 0%",1.50,"2023-11-01","2023-11-25","fromage_blanc.jpg",1);
+insert into produit values(null,"yaourt a la fraise","yaourt 0% de matieres grasses avec de la fraise",1.89,"2023-11-04","2023-12-04","produit_1",1);
+insert into produit values(null,"yaourt a la mangue","yaourt 0% de matieres grasses avec de la mangue",1.89,"2023-11-02","2023-12-02","produit_2",1);
+insert into produit values(null,"fromage blanc","fromage blanc 0%",1.50,"2023-11-01","2023-11-25","produit_3",1);
 
-insert into produit values(null,"fraise","Gariguettes",1.75,"2023-11-04","2023-11-14","fraise.jpeg",2);
-insert into produit values(null,"haricots verts","extra fins",1,"2023-11-07","2023-11-08","haricots.jpg",2);
-insert into produit values(null,"choux","degueux",0.50,"2023-11-05","2023-12-01","choux.jpg",2);
+insert into produit values(null,"fraise","Gariguettes",1.75,"2023-11-04","2023-11-14","produit_4",2);
+insert into produit values(null,"haricots verts","extra fins",1,"2023-11-07","2023-11-08","produit_5",2);
+insert into produit values(null,"choux","degueux",0.50,"2023-11-05","2023-12-01","produit_6",2);
 
-insert into produit values(null,"steack hache","steack hache pur boeuf",3,"2023-11-04","2023-11-12","steak.webp",3);
-insert into produit values(null,"blanc de poulet","bio",5,"2023-11-07","2023-11-15","poulet.jpg",3);
+insert into produit values(null,"steack hache","steack hache pur boeuf",3,"2023-11-04","2023-11-12","produit_7",3);
+insert into produit values(null,"blanc de poulet","bio",5,"2023-11-07","2023-11-15","produit_8",3);
 
 
 

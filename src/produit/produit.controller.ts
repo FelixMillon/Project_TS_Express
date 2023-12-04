@@ -9,12 +9,10 @@ export class ProduitController {
         prix: number,
         date_achat: string,
         date_peremption: string | null,
-        url_image: string,
+        file: any,
         id_cat: number
     ): Promise<Produit | null> {
         this.checkID(id_cat);
-        this.checkString(libelle, "libelle");
-        this.checkString(url_image, "url_image");
         this.checkDate(date_achat, "date_achat");
         this.checkPrice(prix);
         if(date_peremption != null){
@@ -26,7 +24,7 @@ export class ProduitController {
             prix,
             date_achat,
             date_peremption,
-            url_image,
+            file,
             id_cat
         );
     }
@@ -38,7 +36,7 @@ export class ProduitController {
         prix: number | null,
         date_achat: string | null,
         date_peremption: string | null,
-        url_image: string | null,
+        file: any | null,
         id_cat: number | null
     ): Promise<boolean> {
         this.checkID(id);
@@ -47,9 +45,6 @@ export class ProduitController {
         }
         if(libelle){
             this.checkString(libelle, "libelle");
-        }
-        if(url_image){
-            this.checkString(url_image, "url_image");
         }
         if(date_achat){
             this.checkDate(date_achat, "date_achat");
@@ -67,7 +62,7 @@ export class ProduitController {
             prix,
             date_achat,
             date_peremption,
-            url_image,
+            file,
             id_cat
         );
     }

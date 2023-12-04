@@ -7,7 +7,7 @@ export interface ProduitService{
         prix: number,
         date_achat: string,
         date_peremption: string | null,
-        url_image: string,
+        file: any,
         id_cat: number
     ): Promise<Produit | null>;
     update(
@@ -17,7 +17,7 @@ export interface ProduitService{
         prix: number | null,
         date_achat: string | null,
         date_peremption: string | null,
-        url_image: string | null,
+        file: any | null,
         id_cat: number | null
     ): Promise<boolean>;
     delete(id: number): Promise<boolean>;

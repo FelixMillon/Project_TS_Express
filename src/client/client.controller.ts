@@ -18,7 +18,7 @@ export class ClientController {
         this.checkString(email, "email");
         this.checkString(nom, "nom");
         this.checkString(prenom, "prenom");
-        this.checkString(mdp, "mdp");
+        this.checkPassword(mdp);
         this.checkDate(date_naiss, "date_naiss");
         this.checkString(ville, "ville");
         this.checkString(cp, "cp");
@@ -100,8 +100,8 @@ export class ClientController {
         newMdp: string
     ): Promise<boolean> {
         this.checkID(id);
-        this.checkString(oldMdp, "oldMdp");
-        this.checkString(newMdp, "newMdp");
+        this.checkPassword(oldMdp);
+        this.checkPassword(newMdp);
         return await this.clientService.updatePassword(
             id,
             oldMdp,
@@ -148,6 +148,15 @@ export class ClientController {
         // is the string whitespaced ?
         if (testedString.includes(" ")) {
             throw new Error(`${key} is whitespaced`);
+        }
+        // other checks
+    }
+
+    private checkPassword(password: string){
+        // is the password robust
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
+        if(!regex.test(password)){
+            throw new Error('the password is not robust');
         }
         // other checks
     }
