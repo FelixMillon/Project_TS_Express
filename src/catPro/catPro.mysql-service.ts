@@ -73,7 +73,7 @@ export class CatProMySQLService implements CatProService {
             const results = await this.db.asyncQuery(userQuery);
             let selectedCats = [];
             for( let i = 0; i< results.length; i++){
-                selectedCats.push(new CatPro(results[i].insertId,results[i].libelle,results[i].description));
+                selectedCats.push(new CatPro(results[i].id_cat,results[i].libelle,results[i].description));
             }
             return(selectedCats);
         } catch (error) {

@@ -33,7 +33,7 @@ export class CatProRouter {
                 next(error);
             }
         });
-        this.router.put('/update', async (req, res, next) => {
+        this.router.put('/update/', async (req, res, next) => {
             try {
                 const { id_cat, libelle, description } = req.body;
                 const result = await this.catProController.update(id_cat,libelle,description)

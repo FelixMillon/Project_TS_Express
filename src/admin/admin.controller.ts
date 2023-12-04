@@ -1,47 +1,94 @@
-import { User } from './user';
-import { UserService } from './user.service';
-import fs from 'fs';
-export class UserController {
-    constructor(private userService: UserService) {}
-    private users : User[] = []; 
-    private filename : string = 'user.json';
+import { Admin } from './admin';
+import { AdminService } from './admin.service';
+export class AdminController {
+    constructor(private adminService: AdminService) {}
 
-    async add(username: string,email: string, password: string): Promise<User | null> {
-        this.checkString(username, "username");
+    async add(
+        email: string,
+        nom:string,
+        prenom:string,
+        mdp: string,
+        droits: number
+    ): Promise<Admin | null> {
+        this.checkRights(droits);
         this.checkString(email, "email");
-        this.checkString(password, "password");
-        this.checkPassword(password);
-        return this.userService.add(username, email, password);
+        this.checkString(nom, "nom");
+        this.checkString(prenom, "prenom");
+        this.checkPassword(mdp);
+        return await this.adminService.add(
+            email,
+            nom,
+            prenom,
+            mdp,
+            droits
+        );
     }
 
-    async getById(id: number): Promise<User | null> {
+    async update(
+        id: number,
+        email: string | null,
+        nom:string | null,
+        prenom:string | null,
+        droits: number | null
+    ): Promise<boolean> {
         this.checkID(id);
-        return await this.userService.getById(id);
+        if(email){
+            this.checkString(email, "email");
+        }
+        if(nom){
+            this.checkString(nom, "nom");
+        }
+        if(prenom){
+            this.checkString(prenom, "prenom");
+        }
+        if(droits){
+            this.checkRights(droits);
+        }
+        return await this.adminService.update(
+            id,
+            email,
+            nom,
+            prenom,
+            droits
+        );
     }
 
-    async updateUser(id: number,username: string, email: string): Promise<boolean> {
+    async updatePassword(
+        id: number,
+        oldMdp: string,
+        newMdp: string
+    ): Promise<boolean> {
         this.checkID(id);
-        this.checkString(username, "username");
-        this.checkString(email, "email");
-        this.checkEmailIsFree(email);
-        return await this.userService.updateUser(id,username,email);
+        this.checkPassword(oldMdp);
+        this.checkPassword(newMdp);
+        return await this.adminService.updatePassword(
+            id,
+            oldMdp,
+            newMdp,
+        );
     }
     
     async delete(id: number): Promise<boolean> {
         this.checkID(id);
-        return await this.userService.delete(id);
+        return await this.adminService.delete(id);
     }
 
-    async getByEmail(email: string): Promise<User | null> {
-        this.checkString(email, "email");
-        return await this.userService.getByEmail(email);
-    }
-
-    async updatePassword(id: number, password: string): Promise<boolean> {
+    async getById(id: number): Promise<Admin | null> {
         this.checkID(id);
-        this.checkString(password, "password");
-        this.checkPassword(password);
-        return await this.userService.updatePassword(id, password);
+        return await this.adminService.getById(id);
+    }
+
+    async getByEmail(email: string): Promise<Admin | null> {
+        this.checkString(email,"email");
+        return await this.adminService.getByEmail(email);
+    }
+
+    async getByRights(droits: number): Promise<Admin[] | null> {
+        return await this.adminService.getByRights(droits);
+    }
+
+    async getAll(): Promise<Admin[] | null> {
+        return await this.adminService.getAll();
     }
 
     private checkID(id: number) {
@@ -52,6 +99,22 @@ export class UserController {
         // is the id a negative number ?
         if (id < 0) {
             throw new Error('Id is negative');
+        }
+        // other checks
+    }
+
+    private checkRights(id: number) {
+        // is the rights a decimal ?
+        if (this.isDecimal(id)) {
+            throw new Error('Rights is not decimal');
+        }
+        // is the rights a negative number ?
+        if (id < 0) {
+            throw new Error('Rights is negative');
+        }
+        // is the rights contain more than one digit  ?
+        if (id > 9) {
+            throw new Error('Rights contain more than one digit');
         }
         // other checks
     }
@@ -68,10 +131,6 @@ export class UserController {
         // other checks
     }
 
-    private isDecimal(id: number): boolean {
-        return id % 1 != 0;
-    }
-
     private checkPassword(password: string){
         // is the password robust
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
@@ -81,12 +140,7 @@ export class UserController {
         // other checks
     }
 
-    private checkEmailIsFree(email: string){
-        // is the email is free
-        this.users = JSON.parse(fs.readFileSync(this.filename, 'utf8'));
-        if(this.users.find((u : any) => u.email === email)){
-            throw new Error("This email is already used");
-        }
-        // other checks
+    private isDecimal(id: number): boolean {
+        return id % 1 != 0;
     }
 }

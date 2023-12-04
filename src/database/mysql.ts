@@ -5,11 +5,12 @@ class MySQLConnection {
     private connection: mysql.Connection;
 
     private constructor() {
-        const host = process.env.MYSQL_HOST;
-        const user = process.env.MYSQL_USER;
-        const password = process.env.MYSQL_PASSWORD;
+        const os = require('os');
+        const isMacOS = os.platform() === 'darwin';
+        const host = isMacOS ? process.env.MYSQL_HOST_MAC : process.env.MYSQL_HOST;
+        const password = isMacOS ? process.env.MYSQL_PASSWORD_MAC : process.env.MYSQL_PASSWORD;
         const database = process.env.MYSQL_DATABASE;
-
+        const user = process.env.MYSQL_USER;
         this.connection = mysql.createConnection({
             host,
             user,
@@ -17,7 +18,7 @@ class MySQLConnection {
             database,
         });
     }
-
+    
     static getInstance(): MySQLConnection {
         MySQLConnection.instance = new MySQLConnection();
         return MySQLConnection.instance;
@@ -37,19 +38,17 @@ class MySQLConnection {
         });
     }
 
-    query(sql: string, callback: (error: mysql.MysqlError | null, results: any) => void): void {
-        this.connection.query(sql, callback);
+    query(sqlQuery: string, callback: (error: mysql.MysqlError | null, results: any) => void): void {
+        this.connection.query(sqlQuery, callback);
     }
 
-    async asyncQuery(query: string): Promise<any> {
+    async asyncQuery(sqlQuery: string): Promise<any> {
         const db = MySQLConnection.getInstance();
         
         try {
-            console.log("je vais ouvrir")
             await db.connect();
-            console.log("j'ai ouvert")
             return new Promise((resolve, reject) => {
-                db.query(query, (error: any, results: any) => {
+                db.query(sqlQuery, (error: any, results: any) => {
                     if (error) {
                         reject(error);
                     } else {
@@ -58,12 +57,11 @@ class MySQLConnection {
                 });
             });
         } catch (error) {
+            console.log(sqlQuery);
             console.error('Erreur lors de la requête :', error);
             return null;
         } finally {
-            console.log("je vais fermer")
             await db.close();
-            console.log("j'ai fermé")
         }
     }
 
