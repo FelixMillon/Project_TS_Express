@@ -31,7 +31,6 @@ class MySQLConnection {
                     console.error('Erreur de connexion MySQL :', err);
                     reject(err);
                 } else {
-                    console.log('Connecté à MySQL');
                     resolve();
                 }
             });
@@ -72,7 +71,6 @@ class MySQLConnection {
                     console.error('Erreur lors de la fermeture de la connexion :', err);
                     reject(err);
                 } else {
-                    console.log('Déconnecté de MySQL');
                     resolve();
                 }
             });
