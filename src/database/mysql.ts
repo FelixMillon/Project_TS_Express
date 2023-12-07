@@ -26,7 +26,7 @@ class MySQLConnection {
 
     connect(): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.connection.connect((err) => {
+            this.connection.connect((err: any) => {
                 if (err) {
                     console.error('Erreur de connexion MySQL :', err);
                     reject(err);
@@ -66,7 +66,7 @@ class MySQLConnection {
 
     close(): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.connection.end((err) => {
+            this.connection.end((err: any) => {
                 if (err) {
                     console.error('Erreur lors de la fermeture de la connexion :', err);
                     reject(err);
