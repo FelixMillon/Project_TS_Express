@@ -45,6 +45,8 @@ export class ProduitRouter {
 
         this.router.post('/add/', upload.single('image'), async (req: any, res: any, next: any) => {
             try {
+                console.log(req)
+                console.log(req.file)
                 const file = req.file
                 const { libelle, description, prix, date_achat, date_peremption, id_cat } = req.body;
                 const result = await this.produitController.add(libelle, description, prix, date_achat, date_peremption, file, id_cat);

@@ -26,6 +26,7 @@ export class CatProRouter {
         });
         this.router.post('/add/', async (req, res, next) => {
             try {
+                console.log(req.body)
                 const { libelle, description } = req.body;
                 const result = await this.catProController.add(libelle, description);
                 res.status(200).json(result);
@@ -35,8 +36,8 @@ export class CatProRouter {
         });
         this.router.put('/update/', async (req, res, next) => {
             try {
-                const { id_cat, libelle, description } = req.body;
-                const result = await this.catProController.update(id_cat,libelle,description)
+                const { id, libelle, description } = req.body;
+                const result = await this.catProController.update(id,libelle,description)
                 res.status(200).json(result);
             } catch (error: unknown) {
                 next(error);

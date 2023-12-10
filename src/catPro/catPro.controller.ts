@@ -12,7 +12,6 @@ export class CatProController {
         libelle: string | null,
         description: string | null
     ): Promise<boolean> {
-        console.log(id_cat)
         this.checkID(id_cat);
         return await this.catProService.update(id_cat,libelle,description);
     }
