@@ -87,6 +87,10 @@ export class AdminController {
         return await this.adminService.getByRights(droits);
     }
 
+    async getRights(username: string, password: string): Promise<number> {
+        return await this.adminService.getRights(username, password);
+    }
+
     async getAll(): Promise<Admin[] | null> {
         return await this.adminService.getAll();
     }

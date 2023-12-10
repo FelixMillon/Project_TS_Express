@@ -19,6 +19,8 @@ export interface AdminService{
 
     getByRights(droits: number): Promise<Admin[] | null>;
 
+    getRights(username: string, password: string): Promise<number>;
+
     delete(id: number): Promise<boolean>;
 
     update(
