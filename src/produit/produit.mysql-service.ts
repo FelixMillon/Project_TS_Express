@@ -4,7 +4,6 @@ import MySQLConnection from '../database/mysql';
 import { uploadFile, deleteFile, getObjectSignedUrl } from '../database/s3'
 import multer from 'multer'
 import sharp from 'sharp'
-import crypto from 'crypto'
 
 export class ProduitMySQLService implements ProduitService {
     db = MySQLConnection.getInstance();
