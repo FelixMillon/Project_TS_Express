@@ -51,8 +51,8 @@ export class ExpressRouter {
     private configureRouters(): void {
         this.clientRouter = new ClientRouter(this.clientController);
         this.adminRouter = new AdminRouter(this.adminController);
-        this.catProRouter = new CatProRouter(this.catProController);
-        this.produitRouter = new ProduitRouter(this.produitController);
+        this.catProRouter = new CatProRouter(this.catProController, this.adminController);
+        this.produitRouter = new ProduitRouter(this.produitController, this.adminController);
     }
 
     private configureRoute(): void {

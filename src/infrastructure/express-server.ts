@@ -14,14 +14,20 @@ export class ExpressServer {
         this.configureBodyParser();
         this.configureRoutes();
     }
-
+    
     private configureCORS(): void {
-        this.express.use(cors());
-
-        // Ou pour restreindre les origines autorisées :
-        // this.express.use(cors({ origin: 'http://localhost:5173' }));
+        this.express.use(cors({
+            origin: function (origin, callback) {
+              // Vérifie si l'origine fait partie des origines autorisées
+              if (!origin || process.env.ALLOWED_ORIGINS) {
+                callback(null, true);
+              } else {
+                callback(new Error('Not allowed by CORS'));
+              }
+            },
+        }));
     }
-
+    
     private configureBodyParser(): void {
         this.express.use(bodyParser.json());
     }
