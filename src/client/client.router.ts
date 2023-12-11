@@ -65,7 +65,7 @@ export class ClientRouter {
         this.router.put('/update', async (req, res, next) => {
             try {
                 const {
-                    id_cli,
+                    id,
                     email,
                     nom,
                     prenom,
@@ -76,7 +76,7 @@ export class ClientRouter {
                     numrue,
                     complement } = req.body;
                 const result = await this.clientController.update(
-                    id_cli,
+                    id,
                     email,
                     nom,
                     prenom,

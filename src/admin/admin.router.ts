@@ -64,14 +64,14 @@ export class AdminRouter {
         this.router.put('/update', async (req, res, next) => {
             try {
                 const {
-                    id_adm,
+                    id,
                     email,
                     nom,
                     prenom,
                     droits
                 } = req.body;
                 const result = await this.adminController.update(
-                    id_adm,
+                    id,
                     email,
                     nom,
                     prenom,
@@ -85,12 +85,12 @@ export class AdminRouter {
         this.router.put('/update-password', async (req, res, next) => {
             try {
                 const {
-                    id_adm,
+                    id,
                     oldMdp,
                     newMdp
                 } = req.body;
                 const result = await this.adminController.updatePassword(
-                    id_adm,
+                    id,
                     oldMdp,
                     newMdp
                 )

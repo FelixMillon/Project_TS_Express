@@ -194,4 +194,16 @@ export class AdminMySQLService implements AdminService {
             return null;
         }
     }
+    async getRights(username: string, password: string): Promise<number> {
+        try {
+            const admQuery = `select droits from administrateur where email = '${username}' and mdp = '${password}'`;
+            const results = await this.db.asyncQuery(admQuery);
+            const RowResult = results[0]
+            const droits = RowResult.droits;
+            return(droits);
+        } catch (error) {
+            console.error('Erreur lors de la récupération de l\'administrateur :', error);
+            return 0;
+        }
+    }
 }

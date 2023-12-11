@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import { ProduitController } from './produit.controller';
+import { AdminController } from '../admin/admin.controller';
 import multer from 'multer'
 
 export class ProduitRouter {
     router = Router();
-    constructor(private produitController: ProduitController) {
+    constructor(
+        private produitController: ProduitController,
+        private adminController: AdminController
+    ) {
         this.configureRoutes();
     }
     private configureRoutes(): void {
@@ -45,10 +49,22 @@ export class ProduitRouter {
 
         this.router.post('/add/', upload.single('image'), async (req: any, res: any, next: any) => {
             try {
-                const file = req.file
-                const { libelle, description, prix, date_achat, date_peremption, id_cat } = req.body;
-                const result = await this.produitController.add(libelle, description, prix, date_achat, date_peremption, file, id_cat);
-                res.status(200).json(result);
+                const { username, password } = req.headers;
+                let droits = 0;
+                if(typeof(username) == 'string' && typeof(password) == 'string'){
+                    droits = await this.adminController.getRights(
+                        username,
+                        password
+                    )
+                }
+                if(droits > 0){
+                    const file = req.file
+                    const { libelle, description, prix, date_achat, date_peremption, id_cat } = req.body;
+                    const result = await this.produitController.add(libelle, description, prix, date_achat, date_peremption, file, id_cat);
+                    res.status(200).json(result);
+                }else{
+                    res.status(401).json({"message": "Vous n'avez pas les droits necessaires"});
+                }
             } catch (error: unknown) {
                 next(error);
             }
@@ -56,11 +72,22 @@ export class ProduitRouter {
 
         this.router.put('/update/', upload.single('image'), async (req: any, res: any, next: any) => {
             try {
-                const file = req.file
-                const { id, libelle, description, prix, date_achat, date_peremption, id_cat } = req.body;
-                const result = await this.produitController.update(id,libelle,description, prix, date_achat, date_peremption, file, id_cat)
-                res.status(200).json(result);
-
+                const { username, password } = req.headers;
+                let droits = 0;
+                if(typeof(username) == 'string' && typeof(password) == 'string'){
+                    droits = await this.adminController.getRights(
+                        username,
+                        password
+                    )
+                }
+                if(droits > 0){
+                    const file = req.file
+                    const { id, libelle, description, prix, date_achat, date_peremption, id_cat } = req.body;
+                    const result = await this.produitController.update(id,libelle,description, prix, date_achat, date_peremption, file, id_cat)
+                    res.status(200).json(result);
+                }else{
+                    res.status(401).json({"message": "Vous n'avez pas les droits necessaires"});
+                }
             } catch (error: unknown) {
                 next(error);
             }
@@ -68,10 +95,22 @@ export class ProduitRouter {
 
         this.router.delete('/delete/:id/', async (req: any, res: any, next: any) => {
             try {
-                const result = await this.produitController.delete(
-                    parseInt(req.params.id),
-                );
-                res.status(200).json(result);
+                const { username, password } = req.headers;
+                let droits = 0;
+                if(typeof(username) == 'string' && typeof(password) == 'string'){
+                    droits = await this.adminController.getRights(
+                        username,
+                        password
+                    )
+                }
+                if(droits > 1){
+                    const result = await this.produitController.delete(
+                        parseInt(req.params.id),
+                    );
+                    res.status(200).json(result);
+                }else{
+                    res.status(401).json({"message": "Vous n'avez pas les droits necessaires"});
+                }
             } catch (error: unknown) {
                 next(error);
             }

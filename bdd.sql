@@ -48,7 +48,7 @@ create table produit
 	url_image varchar(100),
 	id_cat int(5) not null,
     primary key (id_pro),
-	foreign key (id_cat) references categorie_produit(id_cat)
+	foreign key (id_cat) references categorie_produit(id_cat) ON DELETE CASCADE
 )engine=innodb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table commande
@@ -86,7 +86,5 @@ insert into produit values(null,"choux","degueux",0.50,"2023-11-05","2023-12-01"
 insert into produit values(null,"steack hache","steack hache pur boeuf",3,"2023-11-04","2023-11-12","produit_7",3);
 insert into produit values(null,"blanc de poulet","bio",5,"2023-11-07","2023-11-15","produit_8",3);
 
-
-
-
-
+insert into administrateur values(null,"admin@gmail.com","superadmin","Jean","Azerty@123",2);
+insert into administrateur values(null,"nonadmin@gmail.com","nonadmin","Marcel","Azerty@123",1);
