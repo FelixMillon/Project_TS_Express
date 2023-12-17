@@ -32,4 +32,8 @@ export interface AdminService{
     ): Promise<boolean>;
 
     updatePassword(id: number, oldMdp: string, newMdp: string): Promise<boolean>;
+
+    generateToken(email: string, password: string): Promise<String | null>;
+
+    verifyToken(token: string): Promise<Boolean>;
 }

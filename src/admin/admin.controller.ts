@@ -95,6 +95,14 @@ export class AdminController {
         return await this.adminService.getAll();
     }
 
+    async generateToken(username: string, password: string): Promise<String | null>{
+        return await this.adminService.generateToken(username, password);
+    }
+
+    async verifyToken(token:string): Promise<Boolean>{
+        return await this.adminService.verifyToken(token);
+    }
+
     private checkID(id: number) {
         // is the id a decimal ?
         if (this.isDecimal(id)) {

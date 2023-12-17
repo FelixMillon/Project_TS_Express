@@ -109,6 +109,44 @@ export class AdminRouter {
                 next(error);
             }
         });
-        // other routes...
+
+        this.router.post('/generateToken/', async (req, res, next) => {
+            try {
+                const {
+                    email,
+                    mdp
+                }= req.headers;
+                if(typeof(email) == 'string' && typeof(mdp) == 'string'){
+                    const result = await this.adminController.generateToken(
+                        email,
+                        mdp
+                    );
+                    res.status(200).json(result);
+                }else{
+                    res.status(200).json(null);
+                }
+            } catch (error: unknown) {
+                next(error);
+            }
+        });
+
+        this.router.get('/loggin/', async (req, res, next) => {
+            try {
+                const {
+                    token
+                }= req.headers;
+                if(typeof(token) == 'string'){
+                    const result = await this.adminController.verifyToken(
+                        token
+                    );
+                    res.status(200).json(result);
+                }
+                else{
+                    res.status(200).json(false);
+                }
+            } catch (error: unknown) {
+                next(error);
+            }
+        });
     }
 }
