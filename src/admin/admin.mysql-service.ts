@@ -10,8 +10,7 @@ export class AdminMySQLService implements AdminService {
         email: string,
         nom:string,
         prenom:string,
-        mdp: string,
-        droits: number
+        mdp: string
     ): Promise<Admin | null> {
         const UserExists = await this.getByEmail(email);
         if(UserExists != null){
@@ -22,14 +21,12 @@ export class AdminMySQLService implements AdminService {
                 email,
                 nom,
                 prenom,
-                mdp,
-                droits
+                mdp
             ) VALUES (
                 '${email}',
                 '${nom}',
                 '${prenom}',
-                '${mdp}',
-                '${droits}'
+                '${mdp}'
             )`;
             const results = await this.db.asyncQuery(cliQuery);
             const insertedAdm = new Admin(
@@ -38,7 +35,7 @@ export class AdminMySQLService implements AdminService {
                 results.nom,
                 results.prenom,
                 results.mdp,
-                results.droits
+                1
             );
             return(insertedAdm);
         } catch (error) {
@@ -225,6 +222,20 @@ export class AdminMySQLService implements AdminService {
         }
     }
 
+    async getTokenRights(token: string): Promise<number | null> {
+        try {
+            if(!await this.verifyToken(token)){
+                return null
+            }
+            const decodedPayload: any = jwt.decode(token);
+            const droits = decodedPayload['droits'];
+            return droits;
+        } catch (error) {
+            console.error('Erreur lors de la récupération des droits du token :', error);
+            return null;
+        }
+    }
+
     async generateToken(email: string, password: string): Promise<string | null>{
         try {
             const droits = await this.getRights(email,password);
@@ -235,7 +246,7 @@ export class AdminMySQLService implements AdminService {
             const payload = {
                 username: email,
                 role: 'admin',
-                droits: 'droits'
+                droits: droits
             };
             const options = {
                 expiresIn: '1h'

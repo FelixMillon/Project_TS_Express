@@ -46,15 +46,13 @@ export class AdminRouter {
                     email,
                     nom,
                     prenom,
-                    mdp,
-                    droits
+                    mdp
                 } = req.body;
                 const result = await this.adminController.add(
                     email,
                     nom,
                     prenom,
-                    mdp,
-                    droits
+                    mdp
                 );
                 res.status(200).json(result);
             } catch (error: unknown) {
@@ -110,27 +108,28 @@ export class AdminRouter {
             }
         });
 
-        this.router.post('/generateToken/', async (req, res, next) => {
+        this.router.post('/signin/', async (req, res, next) => {
             try {
                 const {
                     email,
-                    mdp
+                    password
                 }= req.headers;
-                if(typeof(email) == 'string' && typeof(mdp) == 'string'){
-                    const result = await this.adminController.generateToken(
+                if(typeof(email) == 'string' && typeof(password) == 'string'){
+                    const token = await this.adminController.generateToken(
                         email,
-                        mdp
+                        password
                     );
-                    res.status(200).json(result);
+                    console.log(token)
+                    res.status(200).json(token);
                 }else{
-                    res.status(200).json(null);
+                    res.status(401).json(null);
                 }
             } catch (error: unknown) {
                 next(error);
             }
         });
 
-        this.router.get('/loggin/', async (req, res, next) => {
+        this.router.get('/verify/token/', async (req, res, next) => {
             try {
                 const {
                     token

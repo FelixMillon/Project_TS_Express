@@ -7,8 +7,7 @@ export interface AdminService{
         email: string,
         nom:string,
         prenom:string,
-        mdp: string,
-        droits: number
+        mdp: string
     ): Promise<Admin | null>;
 
     getById(id: number): Promise<Admin | null>;
@@ -20,6 +19,8 @@ export interface AdminService{
     getByRights(droits: number): Promise<Admin[] | null>;
 
     getRights(username: string, password: string): Promise<number>;
+
+    getTokenRights(token: string): Promise<number | null>;
 
     delete(id: number): Promise<boolean>;
 
