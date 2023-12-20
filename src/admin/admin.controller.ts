@@ -7,20 +7,16 @@ export class AdminController {
         email: string,
         nom:string,
         prenom:string,
-        mdp: string,
-        droits: number
+        mdp: string
     ): Promise<Admin | null> {
-        this.checkRights(droits);
         this.checkString(email, "email");
         this.checkString(nom, "nom");
         this.checkString(prenom, "prenom");
-        this.checkPassword(mdp);
         return await this.adminService.add(
             email,
             nom,
             prenom,
-            mdp,
-            droits
+            mdp
         );
     }
 
@@ -59,8 +55,6 @@ export class AdminController {
         newMdp: string
     ): Promise<boolean> {
         this.checkID(id);
-        this.checkPassword(oldMdp);
-        this.checkPassword(newMdp);
         return await this.adminService.updatePassword(
             id,
             oldMdp,
@@ -91,8 +85,20 @@ export class AdminController {
         return await this.adminService.getRights(username, password);
     }
 
+    async getTokenRights(token: string): Promise<number | null> {
+        return await this.adminService.getTokenRights(token);
+    }
+
     async getAll(): Promise<Admin[] | null> {
         return await this.adminService.getAll();
+    }
+
+    async generateToken(email: string, password: string): Promise<String | null>{
+        return await this.adminService.generateToken(email, password);
+    }
+
+    async verifyToken(token:string): Promise<Boolean>{
+        return await this.adminService.verifyToken(token);
     }
 
     private checkID(id: number) {
@@ -131,15 +137,6 @@ export class AdminController {
         // is the string whitespaced ?
         if (testedString.includes(" ")) {
             throw new Error(`${key} is whitespaced`);
-        }
-        // other checks
-    }
-
-    private checkPassword(password: string){
-        // is the password robust
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
-        if(!regex.test(password)){
-            throw new Error('the password is not robust');
         }
         // other checks
     }
