@@ -8,13 +8,14 @@ create table client
 	email varchar(60) not null UNIQUE,
 	nom varchar(100) not null,
 	prenom varchar(100) not null,
-    mdp varchar(50) not null,
+    mdp varchar(255) not null,
 	date_naiss date not null,
 	ville varchar(50) not null,
 	cp varchar(20) not null,
 	rue varchar(50) not null,
 	numrue int(5) not null,
 	complement varchar(50) not null,
+	secretkey varchar(255),
     primary key (id_cli)
 )engine=innodb;
 
@@ -24,8 +25,9 @@ create table administrateur
 	email varchar(60) not null UNIQUE,
 	nom varchar(100) not null,
 	prenom varchar(100) not null,
-    mdp varchar(50) not null,
+    mdp varchar(255) not null,
 	droits int(1) not null,
+	secretkey varchar(255),
     primary key (id_adm)
 )engine=innodb; 
 
@@ -86,5 +88,5 @@ insert into produit values(null,"choux","degueux",0.50,"2023-11-05","2023-12-01"
 insert into produit values(null,"steack hache","steack hache pur boeuf",3,"2023-11-04","2023-11-12","produit_7",3);
 insert into produit values(null,"blanc de poulet","bio",5,"2023-11-07","2023-11-15","produit_8",3);
 
-insert into administrateur values(null,"admin@gmail.com","superadmin","Jean","Azerty@123",2);
-insert into administrateur values(null,"nonadmin@gmail.com","nonadmin","Marcel","Azerty@123",1);
+insert into administrateur values(null,"admin@gmail.com","superadmin","Jean","3bc94029a31c49a3ae09e9ec75c6afaf06ba8ec1375b15f9eaaf7f528d82bac1",2, null);
+insert into administrateur values(null,"nonadmin@gmail.com","nonadmin","Marcel","3bc94029a31c49a3ae09e9ec75c6afaf06ba8ec1375b15f9eaaf7f528d82bac1",1, null);

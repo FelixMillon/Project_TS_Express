@@ -1,6 +1,8 @@
 import { Admin } from './admin';
 import { AdminService } from './admin.service';
 import MySQLConnection from '../database/mysql';
+import crypto from 'crypto';
+import jwt, { VerifyErrors, VerifyOptions } from 'jsonwebtoken';
 
 export class AdminMySQLService implements AdminService {
     db = MySQLConnection.getInstance();
@@ -8,8 +10,7 @@ export class AdminMySQLService implements AdminService {
         email: string,
         nom:string,
         prenom:string,
-        mdp: string,
-        droits: number
+        mdp: string
     ): Promise<Admin | null> {
         const UserExists = await this.getByEmail(email);
         if(UserExists != null){
@@ -27,7 +28,7 @@ export class AdminMySQLService implements AdminService {
                 '${nom}',
                 '${prenom}',
                 '${mdp}',
-                '${droits}'
+                1
             )`;
             const results = await this.db.asyncQuery(cliQuery);
             const insertedAdm = new Admin(
@@ -36,7 +37,7 @@ export class AdminMySQLService implements AdminService {
                 results.nom,
                 results.prenom,
                 results.mdp,
-                results.droits
+                1
             );
             return(insertedAdm);
         } catch (error) {
@@ -86,12 +87,27 @@ export class AdminMySQLService implements AdminService {
         oldMdp: string,
         newMdp: string
     ): Promise<boolean> {
-        const cliQuery = `update administrateur set mdp = ${newMdp} where id_adm = ${id} and mdp = ${oldMdp}`;
+        const cliQuery = `update administrateur set mdp = '${newMdp}' where id_adm = ${id} and mdp = '${oldMdp}'`;
         try {
             await this.db.asyncQuery(cliQuery);
             return true;
         } catch (error) {
             console.error('Erreur lors de la mise a jour du mot de passe de l\'administrateur :', error);
+            return false;
+        }
+    }
+
+    private async updateSecretKey(
+        email: string,
+        mdp: string,
+        secretKey: string
+    ): Promise<boolean> {
+        const cliQuery = `update administrateur set secretkey = '${secretKey}' where email = '${email}' and mdp = '${mdp}'`;
+        try {
+            await this.db.asyncQuery(cliQuery);
+            return true;
+        } catch (error) {
+            console.error('Erreur lors de la mise a jour de la secret key de l\'administrateur :', error);
             return false;
         }
     }
@@ -194,6 +210,7 @@ export class AdminMySQLService implements AdminService {
             return null;
         }
     }
+
     async getRights(username: string, password: string): Promise<number> {
         try {
             const admQuery = `select droits from administrateur where email = '${username}' and mdp = '${password}'`;
@@ -206,4 +223,93 @@ export class AdminMySQLService implements AdminService {
             return 0;
         }
     }
+
+    async getTokenRights(token: string): Promise<number | null> {
+        try {
+            if(!await this.verifyToken(token)){
+                return null
+            }
+            const decodedPayload: any = jwt.decode(token);
+            const droits = decodedPayload['droits'];
+            return droits;
+        } catch (error) {
+            console.error('Erreur lors de la récupération des droits du token :', error);
+            return null;
+        }
+    }
+
+    async generateToken(email: string, password: string): Promise<string | null>{
+        try {
+            const droits = await this.getRights(email,password);
+            if(droits == 0){
+                return null;
+            }
+            const secretKey = crypto.randomBytes(32).toString('hex');
+            const payload = {
+                username: email,
+                role: 'admin',
+                droits: droits
+            };
+            const options = {
+                expiresIn: '1h'
+            };
+            const token: string = jwt.sign(payload, secretKey, options);
+            const updated = this.updateSecretKey(email,password, secretKey);
+            if(!updated){
+                return null;
+            }
+            return token;
+            
+        } catch (error) {
+            console.error('Erreur lors de la création du token de l\'administrateur :', error);
+            return null;
+        }
+    }
+
+    async verifyToken(tokenToVerify: string): Promise<boolean> {
+        try {
+
+            const decodedPayload: any = jwt.decode(tokenToVerify);
+            const email = decodedPayload['username'];
+            const secretKey = await this.getSecretKey(email);
+
+            const verifyOptions: VerifyOptions = {
+                algorithms: ['HS256'],
+            };
+
+            if (secretKey !== null) {
+                return new Promise<boolean>((resolve, reject) => {
+                    jwt.verify(tokenToVerify, secretKey, verifyOptions, (err: VerifyErrors | null, decoded: any) => {
+                        if (err) {
+                            console.error('Erreur de vérification du JWT :', err);
+                            resolve(false);
+                        } else {
+                            console.log('Token JWT valide. Contenu décodé :', decoded);
+                            resolve(true);
+                        }
+                    });
+                });
+            } else {
+                console.error('La clé secrète est null.');
+                return Promise.resolve(false);
+            }
+        } catch (error) {
+            console.error('Erreur de vérification du JWT :', error);
+            return Promise.resolve(false);
+        }
+    }
+
+    private async getSecretKey(email: string): Promise<string | null>{
+        try {
+            const admQuery = `select secretkey from administrateur where email = '${email}'`;
+            const results = await this.db.asyncQuery(admQuery);
+            const RowResult = results[0]
+            const secretkey = RowResult.secretkey;
+            return secretkey;
+        } catch (error) {
+            console.error('Erreur lors de la récupération de la secretkey de l\'administrateur :', error);
+            return null;
+        }
+    }
+
 }

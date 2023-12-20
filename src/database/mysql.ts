@@ -56,7 +56,6 @@ class MySQLConnection {
                 });
             });
         } catch (error) {
-            console.log(sqlQuery);
             console.error('Erreur lors de la requête :', error);
             return null;
         } finally {
