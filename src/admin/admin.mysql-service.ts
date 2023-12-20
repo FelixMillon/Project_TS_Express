@@ -21,12 +21,14 @@ export class AdminMySQLService implements AdminService {
                 email,
                 nom,
                 prenom,
-                mdp
+                mdp,
+                droits
             ) VALUES (
                 '${email}',
                 '${nom}',
                 '${prenom}',
-                '${mdp}'
+                '${mdp}',
+                1
             )`;
             const results = await this.db.asyncQuery(cliQuery);
             const insertedAdm = new Admin(
