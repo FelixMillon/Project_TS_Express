@@ -1,5 +1,6 @@
 import { Produit } from './produit';
 import { ProduitService } from './produit.service';
+import { CatProController } from '../catPro/catPro.controller';
 export class ProduitController {
     constructor(private produitService: ProduitService) {}
 
@@ -15,6 +16,8 @@ export class ProduitController {
         this.checkID(id_cat);
         this.checkDate(date_achat, "date_achat");
         this.checkPrice(prix);
+        CatProController.checkString(libelle, "libelle");
+        CatProController.checkString(description, "description");
         if(date_peremption != null){
             this.checkDate(date_peremption, "date_peremption");
         }
@@ -44,7 +47,10 @@ export class ProduitController {
             this.checkID(id_cat);
         }
         if(libelle){
-            this.checkString(libelle, "libelle");
+            CatProController.checkString(libelle, "libelle");
+        }
+        if (description) {
+            CatProController.checkString(description, "description");
         }
         if(date_achat){
             this.checkDate(date_achat, "date_achat");
@@ -87,28 +93,14 @@ export class ProduitController {
     }
 
     private checkID(id: number) {
-        // is the id a decimal ?
         if (this.isDecimal(id)) {
             throw new Error('Id is not decimal');
         }
-        // is the id a negative number ?
         if (id < 0) {
             throw new Error('Id is negative');
         }
-        // other checks
     }
 
-    private checkString(testedString: string,key: string) {
-        // is the string empty ?
-        if (testedString.length < 1) {
-            throw new Error(`${key} is empty`);
-        }
-        // is the string whitespaced ?
-        // if (testedString.includes(" ")) {
-        //     throw new Error(`${key} is whitespaced`);
-        // }
-        // other checks
-    }
 
     private isDecimal(id: number): boolean {
         return id % 1 != 0;
@@ -121,17 +113,18 @@ export class ProduitController {
         }
     }
 
-    private checkPrice(testedPrice: number)
-    {
-        let testedPricestring = testedPrice.toString()
-        const partieDecimaleString = testedPricestring.split(".")[1];
-        const partieEntiere = parseInt(testedPricestring);
+    private checkPrice(testedPrice: number) {
+        let testedPricestring = testedPrice.toString();
+        const parts = testedPricestring.split(".");
+        const partieEntiere = parseInt(parts[0]);
+        const partieDecimaleString = parts[1] || "00";
+    
         if (partieEntiere >= 1000) {
-            throw new Error(`price is to high`);
+            throw new Error(`price is too high`);
         }
-        // if (partieDecimaleString.length > 2) {
-        //     throw new Error(`price must have only 2 numbers after "."`);
-        // }
+        if (partieDecimaleString.length > 2) {
+            throw new Error(`price must have only 2 numbers after "."`);
+        }
     }
 
 }

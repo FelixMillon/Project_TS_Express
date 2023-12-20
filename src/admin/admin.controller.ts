@@ -11,7 +11,7 @@ export class AdminController {
         droits: number
     ): Promise<Admin | null> {
         this.checkRights(droits);
-        this.checkString(email, "email");
+        this.checkEmail(email);
         this.checkString(nom, "nom");
         this.checkString(prenom, "prenom");
         this.checkPassword(mdp);
@@ -33,7 +33,7 @@ export class AdminController {
     ): Promise<boolean> {
         this.checkID(id);
         if(email){
-            this.checkString(email, "email");
+            this.checkEmail(email);
         }
         if(nom){
             this.checkString(nom, "nom");
@@ -92,52 +92,46 @@ export class AdminController {
     }
 
     private checkID(id: number) {
-        // is the id a decimal ?
         if (this.isDecimal(id)) {
             throw new Error('Id is not decimal');
         }
-        // is the id a negative number ?
         if (id < 0) {
             throw new Error('Id is negative');
         }
-        // other checks
+    }
+    private checkEmail(email: string) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+            throw new Error('Invalid email format');
+        }
     }
 
     private checkRights(id: number) {
-        // is the rights a decimal ?
         if (this.isDecimal(id)) {
             throw new Error('Rights is not decimal');
         }
-        // is the rights a negative number ?
         if (id < 0) {
             throw new Error('Rights is negative');
         }
-        // is the rights contain more than one digit  ?
         if (id > 9) {
             throw new Error('Rights contain more than one digit');
         }
-        // other checks
     }
 
     private checkString(testedString: string,key: string) {
-        // is the string empty ?
         if (testedString.length < 1) {
             throw new Error(`${key} is empty`);
         }
-        // is the string whitespaced ?
         if (testedString.includes(" ")) {
             throw new Error(`${key} is whitespaced`);
         }
-        // other checks
     }
 
     private checkPassword(password: string){
-        // is the password robust
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
         if(!regex.test(password)){
             throw new Error('the password is not robust');
         }
-        // other checks
     }
 
     private isDecimal(id: number): boolean {

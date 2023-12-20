@@ -2,7 +2,6 @@ import { Client } from './client';
 import { ClientService } from './client.service';
 export class ClientController {
     constructor(private clientService: ClientService) {}
-
     async add(
         email: string,
         nom: string,
@@ -15,7 +14,7 @@ export class ClientController {
         numrue: string,
         complement: string | null
     ): Promise<Client | null> {
-        this.checkString(email, "email");
+        this.checkEmail(email);
         this.checkString(nom, "nom");
         this.checkString(prenom, "prenom");
         this.checkPassword(mdp);
@@ -54,7 +53,7 @@ export class ClientController {
     ): Promise<boolean> {
         this.checkID(id);
         if(email){
-            this.checkString(email, "email");
+            this.checkEmail(email);
         }
         if(nom){
             this.checkString(nom, "nom");
@@ -129,36 +128,32 @@ export class ClientController {
     }
 
     private checkID(id: number) {
-        // is the id a decimal ?
-        if (this.isDecimal(id)) {
-            throw new Error('Id is not decimal');
+        if (isNaN(id) || id < 1 || id % 1 !== 0) {
+            throw new Error('Invalid ID');
         }
-        // is the id a negative number ?
-        if (id < 0) {
-            throw new Error('Id is negative');
-        }
-        // other checks
     }
 
-    private checkString(testedString: string,key: string) {
-        // is the string empty ?
-        if (testedString.length < 1) {
+    private checkString(testedString: string, key: string) {
+        if (testedString.trim().length === 0) {
             throw new Error(`${key} is empty`);
         }
-        // is the string whitespaced ?
         if (testedString.includes(" ")) {
-            throw new Error(`${key} is whitespaced`);
+            throw new Error(`${key} contains whitespace`);
         }
-        // other checks
+    }
+
+    private checkEmail(email: string) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!emailRegex.test(email)) {
+            throw new Error('Invalid email');
+        }
     }
 
     private checkPassword(password: string){
-        // is the password robust
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
         if(!regex.test(password)){
             throw new Error('the password is not robust');
         }
-        // other checks
     }
 
     private checkDate(testedDate: string, key: string){
@@ -166,9 +161,5 @@ export class ClientController {
         if (!regexDate.test(testedDate)) {
             throw new Error(`${key} is not in the correct format`);
         }
-    }
-
-    private isDecimal(id: number): boolean {
-        return id % 1 != 0;
     }
 }

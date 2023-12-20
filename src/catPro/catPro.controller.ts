@@ -4,6 +4,8 @@ export class CatProController {
     constructor(private catProService: CatProService) {}
 
     async add(libelle: string,description: string): Promise<CatPro | null> {
+        CatProController.checkString(libelle, 'libelle');
+        CatProController.checkString(description, 'description');
         return await this.catProService.add(libelle, description);
     }
 
@@ -14,6 +16,8 @@ export class CatProController {
     ): Promise<boolean> {
         console.log(id_cat)
         this.checkID(id_cat);
+        if (libelle !== null) CatProController.checkString(libelle, 'libelle');
+        if (description !== null) CatProController.checkString(description, 'description');
         return await this.catProService.update(id_cat,libelle,description);
     }
     
@@ -32,27 +36,32 @@ export class CatProController {
     }
 
     private checkID(id: number) {
-        // is the id a decimal ?
         if (this.isDecimal(id)) {
             throw new Error('Id is not decimal');
         }
-        // is the id a negative number ?
         if (id < 0) {
             throw new Error('Id is negative');
         }
-        // other checks
     }
 
-    private checkString(testedString: string,key: string) {
-        // is the string empty ?
+    public static checkString(testedString: string, key: string) {
+        testedString = testedString.trim();
+
         if (testedString.length < 1) {
             throw new Error(`${key} is empty`);
         }
-        // is the string whitespaced ?
-        if (testedString.includes(" ")) {
-            throw new Error(`${key} is whitespaced`);
+        if (testedString.includes("\\") || testedString.includes(";") || testedString.includes(",") ||
+            testedString.includes("|") || testedString.includes("--") || 
+            testedString.includes("``")) {
+            throw new Error(`${key} contains invalid characters`);
         }
-        // other checks
+    
+        testedString = testedString.replace(/['"]/g, "\$&");
+    
+        const maxLength = key === 'libelle' ? 100 : 255;
+        if (testedString.length > maxLength) {
+            throw new Error(`${key} exceeds maximum length of ${maxLength}`);
+        }
     }
 
     private isDecimal(id: number): boolean {
